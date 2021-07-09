@@ -1,0 +1,227 @@
+class ThirdSaturday extends StatefulWidget {
+  @override
+  _ThirdSaturdayState createState() => _ThirdSaturdayState();
+}
+
+class _ThirdSaturdayState extends State<ThirdSaturday> {
+  int indexCountry = 0;
+  int indexLimit = 0;
+  List country = ["us", "in"];
+  List limit = ["10", "25", "50", "100"];
+  String dropdownValueCountry = "in";
+  String dropdownValueLimit = "10";
+  List data = List();
+  Map<String,String> mapping = Map();
+
+  Future<void> getList() async {
+    var response = await http.get(
+        "https://rss.itunes.apple.com/api/v1/$dropdownValueCountry/apple-music/coming-soon/all/$dropdownValueLimit/explicit.json");
+    Map<String,dynamic> jsonData = jsonDecode(response.body);
+    // print(jsonData["feed"]["results"]);
+    data.clear();
+    jsonData["feed"]["results"].forEach((element) {
+      // print(element);
+
+      setState(() {
+        data.add(element);
+      });
+    });
+    print(">>"+data.length.toString());
+    print(">>"+data.toString());
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              buildShowModalBottomSheet(context);
+            },
+            icon: Icon(Icons.settings),
+          )
+        ],
+      ),
+      body: Container(
+        child: ListView.builder(
+          itemCount: data.length,
+            itemBuilder: (BuildContext context, int index) {
+            List genres = data[index]["genres"];
+            List splitList = data[index]["releaseDate"].toString().split("-");
+            String dateNumber = splitList[2];
+            String yearNumber = splitList[0];
+            String monthName;
+            switch(splitList[1]){
+              case "01":
+                monthName = "January";
+              break;
+              case "02":
+                monthName = "February";
+                break;
+              case "03":
+                monthName = "March";
+                break;
+              case "04":
+                monthName = "April";
+                break;
+              case "05":
+                monthName = "May";
+                break;
+              case "06":
+                monthName = "June";
+                break;
+              case "07":
+                monthName = "July";
+                break;
+              case "08":
+                monthName = "August";
+                break;
+              case "09":
+                monthName = "September";
+                break;
+              case "10":
+                monthName = "October";
+                break;
+              case "11":
+                monthName = "November";
+                break;
+              case "12":
+                monthName = "December";
+                break;
+              default:
+                break;
+            }
+            int len = genres.length;
+            String s = "";
+            for(int i =0; i <len;i++){
+
+              if(i == (len-1)){
+                s = s + (genres[i]["name"].toString()+".");
+              }else{
+                s = s + (genres[i]["name"].toString()+", ");
+              }
+
+            }
+            String name = data[index]["name"].toString();
+            String artistName = data[index]["artistName"].toString();
+            String copyright = data[index]["copyright"].toString();
+
+          return Card(
+            elevation: 5.0,color: Colors.grey[400],shadowColor: Colors.black,borderOnForeground: true,
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                      flex: 2,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4.0),
+                        child:Image.network(data[index]["artworkUrl100"])
+                      )
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Genres : "+s,style: TextStyle(fontSize: 18),),
+                        Text("Name : $name",style: TextStyle(fontSize: 18),),
+                        Text("AName : $artistName",style: TextStyle(fontSize: 18),),
+                        copyright == "null" ? Container() : Text("CopyRight : $copyright",style: TextStyle(fontSize: 18),),
+                        Text("Date : $dateNumber $monthName, $yearNumber ",style: TextStyle(fontSize: 18),),
+                        // Text(data[index]["genres"]["name"]),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Future buildShowModalBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Text("Country"),
+                title: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter state) {
+                    return DropdownButton<String>(
+                      value: dropdownValueCountry,
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValueCountry = newValue;
+                        });
+                        Navigator.pop(context);
+                        buildShowModalBottomSheet(context);
+                      },
+                      items: <String>[
+                        'in',
+                        'us',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Text("Limit"),
+                title: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter state) {
+                    return DropdownButton<String>(
+                      value: dropdownValueLimit,
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValueLimit = newValue;
+                        });
+                        Navigator.pop(context);
+                        buildShowModalBottomSheet(context);
+                      },
+                      items: <String>[
+                        '10',
+                        '25',
+                        '50',
+                        '100',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Text("Get Data"),
+                title: new Text(''),
+                onTap: () {
+                  getList();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+}

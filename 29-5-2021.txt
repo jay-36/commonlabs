@@ -1,0 +1,139 @@
+ListViewHandelItemState pageState;
+
+class ListViewHandelItem extends StatefulWidget {
+  @override
+  ListViewHandelItemState createState() {
+    pageState = ListViewHandelItemState();
+    return pageState;
+  }
+}
+
+class ListViewHandelItemState extends State<ListViewHandelItem> {
+  List items = [];
+  List<TextEditingController> _controllers = new List();
+  List<int> counterList = new List();
+  TextEditingController teController = TextEditingController();
+
+
+  @override
+  void dispose() {
+    teController.dispose();
+    super.dispose();
+  }
+
+  List list = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text("Saturday, 29 May 2021")),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  _controllers.add(new TextEditingController());
+                  counterList.add(0);
+                  return Card(
+                    child: ListTile(
+                      leading: Text("$item"),
+                      title: TextFormField(
+                        controller: _controllers[index],
+                        decoration: InputDecoration(
+                            hintText: "Enter Product Name"
+                        ),
+                        onChanged: (val){
+                          if( counterList[index] == 0){
+                            setState(() {
+                              counterList[index] = 1;
+                            });
+                          }
+                          if(val.length == 0){
+                            setState(() {
+                              counterList[index] = 0;
+                            });
+                          }
+                        },
+                      ),
+                      subtitle: Row(
+                        children: [
+                          IconButton(
+                            onPressed: (){
+                              if(counterList[index] < 10){
+                                setState(() {
+                                  counterList[index]++;
+                                });
+                              }
+
+                            },icon: Icon(Icons.add_circle_outline_outlined),
+                          ),
+                          Text("${counterList[index]}"),
+                          IconButton(
+                            onPressed: (){
+                              if(counterList[index] > 0){
+                                setState(() {
+                                  counterList[index]--;
+                                });
+                              }
+                            },icon: Icon(Icons.remove_circle_outline),
+                          ),
+                        ],
+                      ),
+                      trailing:  IconButton(
+                        onPressed: (){
+                          setState(() {
+                            items.removeAt(index);
+                            counterList.removeAt(index);
+                            _controllers.removeAt(index);
+                          });
+                        },icon: Icon(Icons.delete),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Divider(
+              color: Colors.grey,
+              height: 5,
+              indent: 10,
+              endIndent: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextField(
+                        controller: teController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: "Enter Number"
+                        ),
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    child: Text("Add"),
+                    onPressed: () {
+                      items.clear();
+                      counterList.clear();
+                      _controllers.clear();
+                      items = List<String>.generate(int.parse(teController.text), (index) {
+                        return "${index + 1}";
+                      });
+                      setState(() {});
+                    },
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+    );
+  }
+}

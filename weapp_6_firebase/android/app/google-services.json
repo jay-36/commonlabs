@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "847522259767",
+    "project_id": "weapp-authentication",
+    "storage_bucket": "weapp-authentication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847522259767:android:763edcf7b1fc46d13bb0b2",
+        "android_client_info": {
+          "package_name": "com.example.weapp_6_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "847522259767-7dnq70fhimpc6ev0oklj0l2t7dauu4b4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.weapp_6_firebase",
+            "certificate_hash": "abe803634417d4b5fccc49c40f8c2bdc8ba834cd"
+          }
+        },
+        {
+          "client_id": "847522259767-7ikshrhh8pctv326907retr70t8billo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmzYdLWV_c7SLps3gA1u3mJ3aNaKSMW_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "847522259767-7ikshrhh8pctv326907retr70t8billo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

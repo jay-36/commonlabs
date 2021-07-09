@@ -1,0 +1,22 @@
+[
+  {
+    "studentId": "1",
+    "studentName": "Jay",
+    "studentScores": "50"
+  },
+  {
+    "studentId": "2",
+    "studentName": "Vivek",
+    "studentScores": "60"
+  },
+  {
+    "studentId": "3",
+    "studentName": "Manav",
+    "studentScores": "70"
+  },
+  {
+    "studentId": "4",
+    "studentName": "Dhruv",
+    "studentScores": "80"
+  }
+]

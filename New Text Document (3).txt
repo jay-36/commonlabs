@@ -1,0 +1,93 @@
+=> String to DateTime
+DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm:ss").parse(savedDateString);
+
+=> DateTime to String
+String date = DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
+
+==============================================
+  Future<void> _getIncrementCount() async {
+    int result = await platform.invokeMethod('increment');
+    print(result);
+    increment = result;
+
+    setState(() {});
+    
+    
+    
+    
+    //Android Native
+    // private static final String CHANNEL = "increment_counter";
+    //
+    // int i = 0;
+    //
+    // @Override
+    // public void configureFlutterEngine(@NonNull @org.jetbrains.annotations.NotNull FlutterEngine flutterEngine) {
+    // super.configureFlutterEngine(flutterEngine);
+    //
+    // new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler((call, result) -> {
+    //
+    // if (call.method.equals("increment")) {
+    // i++;
+    // result.success(i);
+    // }
+    // });
+    //
+    // }
+  }
+
+=====================================================
+
+
+
+class ApiDemo extends StatefulWidget {
+  const ApiDemo({Key? key}) : super(key: key);
+
+  @override
+  _ApiDemoState createState() => _ApiDemoState();
+}
+
+class _ApiDemoState extends State<ApiDemo> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body:Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Center(
+              child: ElevatedButton(onPressed: (){
+                setData();
+              },child: Text("set"),),
+            ),
+            Center(
+              child: ElevatedButton(onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                getData();
+                User ownerData = await getData();
+
+                print(ownerData.activity);
+              },child: Text("get"),),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<User> getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String,dynamic> userMap = jsonDecode(prefs.getString('User')!);
+    User data = User.fromJson(userMap);
+    return data;
+  }
+
+  Future<void> setData() async {
+     var response = await http.get(Uri.parse("https://www.boredapi.com/api/activity"));
+     var userData = User.fromJson(jsonDecode(response.body));
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+     String data = json.encode(userData);
+     print(data);
+     prefs.setString('User', data);
+  }
+
+}

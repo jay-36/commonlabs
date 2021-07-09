@@ -1,0 +1,222 @@
+date_range_picker: ^1.0.7
+
+class LocationDemo extends StatefulWidget {
+  @override
+  _LocationDemoState createState() => _LocationDemoState();
+}
+
+class _LocationDemoState extends State<LocationDemo> {
+  String dropdownValueFrom = 'Location 1';
+  String dropdownValueTo = 'Location 1';
+  String dropdownValuePlane = 'Plane 1';
+  int from = 1;
+  int to = 1;
+  int step = 0;
+  int plane = 0;
+  int days = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Demo"),
+      ),
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Form : "),
+                DropdownButton<String>(
+                  value: dropdownValueFrom,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValueFrom = newValue;
+                    });
+                    if (newValue == "Location 1") {
+                      setState(() {
+                        from = 1;
+                      });
+                    } else if (newValue == "Location 2") {
+                      setState(() {
+                        from = 2;
+                      });
+                    } else if (newValue == "Location 3") {
+                      setState(() {
+                        from = 3;
+                      });
+                    } else if (newValue == "Location 4") {
+                      setState(() {
+                        from = 4;
+                      });
+                    }
+                    print(from);
+                  },
+                  items: <String>[
+                    'Location 1',
+                    'Location 2',
+                    'Location 3',
+                    'Location 4'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("To : "),
+                DropdownButton<String>(
+                  value: dropdownValueTo,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValueTo = newValue;
+                    });
+                    if (newValue == "Location 1") {
+                      setState(() {
+                        to = 1;
+                      });
+                    } else if (newValue == "Location 2") {
+                      setState(() {
+                        to = 2;
+                      });
+                    } else if (newValue == "Location 3") {
+                      setState(() {
+                        to = 3;
+                      });
+                    } else if (newValue == "Location 4") {
+                      setState(() {
+                        to = 4;
+                      });
+                    }
+                    print(to);
+                  },
+                  items: <String>[
+                    'Location 1',
+                    'Location 2',
+                    'Location 3',
+                    'Location 4'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Plane : "),
+                DropdownButton<String>(
+                  value: dropdownValuePlane,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValuePlane = newValue;
+                    });
+                    if (newValue == "Plane 1") {
+                      setState(() {
+                        plane = 1;
+                      });
+                    } else if (newValue == "Plane 2") {
+                      setState(() {
+                        plane = 2;
+                      });
+                    } else if (newValue == "Plane 3") {
+                      setState(() {
+                        plane = 3;
+                      });
+                    }
+                    print(plane);
+                  },
+                  items: <String>['Plane 1', 'Plane 2', 'Plane 3']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                RaisedButton(
+                  onPressed: () {
+                   setState(() {
+                     step = to - from;
+                   });
+                    if(step.isNegative) {
+                      setState(() {
+                        step = -step;
+                      });
+                    }else{
+                      setState(() {
+                        step = step;
+                      });
+                    }
+                    if (dropdownValuePlane == "Plane 1") {
+                      setState(() {
+                        days = step * plane;
+                      });
+                    } else if (dropdownValuePlane == "Plane 2") {
+                      setState(() {
+                        days = step * plane;
+                      });
+                    } else if (dropdownValuePlane == "Plane 3") {
+                      setState(() {
+                        days = step * plane;
+                      });
+                    }
+
+                    setState(() {});
+                    print("Steps " + step.toString());
+                    print("Days " + days.toString());
+                  },
+                  child: Text("Count Step"),
+                ),
+                Text("Steps : $step"),
+                Text("Days : $days")
+              ],
+            ),
+            Text("${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}"),
+            Text("${DateTime.now().add(Duration(days: days)).day}/${DateTime.now().add(Duration(days: days)).month}/${DateTime.now().add(Duration(days: days)).year}"),
+            MaterialButton(
+                color: Colors.deepOrangeAccent,
+                onPressed: () async {
+                  final List<DateTime> picked = await DateRangePicker.showDatePicker(
+                      context: context,
+                      selectableDayPredicate: _decideWhichDayToEnable,
+                      initialFirstDate:  DateTime.now(),
+                      initialLastDate: ( DateTime.now()).add( Duration(days: days)),
+                      firstDate:  DateTime(2015),
+                      lastDate:  DateTime(DateTime.now().year + 2)
+                  );
+                  if (picked != null && picked.length == 2) {
+                    print(picked);
+                  }
+                },
+                child: new Text("Pick date range")
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool _decideWhichDayToEnable(DateTime day) {
+    if ((day.isAfter(DateTime.now().subtract(Duration(days: 1))) &&
+        day.isBefore(DateTime.now().add(Duration(days: (days - step)))))) {
+      return true;
+    }
+    return false;
+  }
+}
